@@ -1,0 +1,185 @@
+service: typescript-serverless
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  architecture: arm64
+  logRetentionInDays: ${self:custom.logRetentionInDays.${sls:stage}, 7}
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-southeast-1'}
+  deploymentBucket:
+    name: serverless-base-dev-bucket
+  # apiGateway:
+  #   minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  #   restApiId: # share REST API
+  #   restApiRootResourceId: #share REST API
+  environment:
+    DEBUG: "*"
+    NODE_ENV: ${self:provider.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+  # tracing:
+  #   lambda: true
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "sqs:*"
+          Resource: "*"
+        - Effect: "Allow"
+          Action: "sns:*"
+          Resource: "*"
+        - Effect: "Allow"
+          Action: "dynamodb:*"
+          Resource: "*"
+        # - Effect: "Allow"
+        #   Action: "xray:*"
+        #   Resource: "*"
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+  logRetentionInDays:
+    dev: 7
+    staging: 30
+    uat: 30
+    prod: 90
+
+plugins:
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-plugin-typescript
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
+
+# Importing resources from external yml can keep things cleaner
+# resources:
+#   - ${file(resources/dynamodb.yml)}
+#   - ${file(resources/sqs.yml)}
+#   - ${file(resources/sns.yml)}
+
+functions:
+  CreateTodo:
+    handler: src/handler/create.lambda_handler
+    timeout: 30
+    memorySize: 256
+    reservedConcurrency: 5
+    tags:
+      CreatedBy: "shashenta.rao@ecloudvalley.com"
+      Description: Post Todo
+      ServiceName: serverless-typescript-${sls:stage}
+    events:
+      - http:
+          method: POST
+          path: /todo/add
+          cors:
+            origins: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  GetTodo:
+    handler: src/handler/get.lambda_handler
+    timeout: 30
+    memorySize: 256
+    reservedConcurrency: 5
+    tags:
+      CreatedBy: "shashenta.rao@ecloudvalley.com"
+      Description: Get Todo
+      ServiceName: serverless-typescript-${sls:stage}
+    events:
+      - http:
+          method: GET
+          path: /todo/{id}
+          cors:
+            origins: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  ListTodo:
+    handler: src/handler/list.lambda_handler
+    timeout: 30
+    memorySize: 256
+    reservedConcurrency: 5
+    tags:
+      CreatedBy: "shashenta.rao@ecloudvalley.com"
+      Description: List Todo
+      ServiceName: serverless-typescript-${sls:stage}
+    events:
+      - http:
+          method: GET
+          path: /todo/list
+          cors:
+            origins: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  UpdateTodo:
+    handler: src/handler/update.lambda_handler
+    timeout: 30
+    memorySize: 256
+    reservedConcurrency: 5
+    tags:
+      CreatedBy: "shashenta.rao@ecloudvalley.com"
+      Description: Update Todo
+      ServiceName: serverless-typescript-${sls:stage}
+    events:
+      - http:
+          method: PATCH
+          path: /todo/{id}
+          cors:
+            origins: "*"
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: false
+  # ApiGatewayProxyHandler:
+  #   handler: src/handlers/apiGatewayHandler.proxyHandler
+  #   events:
+  #     - http:
+  #         method: get
+  #         path: proxy
+
+  # SQSHandler:
+  #   handler: src/handlers/sqsHandler.handle
+  #   description: Example handler for SQS event source
+  #   timeout: 30
+  #   memorySize: 512
+  #   environment:
+  #     FOO: BAR
+  #   events:
+  #     - sqs:
+  #         arn: !GetAtt ExampleQueue.Arn
+  #         batchSize: 10
+
+  # DynamoDBStreamHandler:
+  #   handler: src/handlers/dynamoDBStreamHandler.handle
+  #   description: Example handler triggered by DynamoDB Streams
+  #   timeout: 10
+  #   memorySize: 512
+  #   events:
+  #     - stream:
+  #         type: dynamodb
+  #         arn: !GetAtt DynamoDBTable.StreamArn
+  #         startingPosition: TRIM_HORIZON
+  #         maximumRetryAttempts: 2
+  #         batchSize: 20
+  #         batchWindow: 3
+  #   environment:
+  #     DYNAMODB_TABLE: !Ref DynamoDBTable
