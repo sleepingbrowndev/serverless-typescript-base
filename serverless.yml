@@ -4,7 +4,7 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   architecture: arm64
   logRetentionInDays: ${self:custom.logRetentionInDays.${sls:stage}, 7}
   stage: ${opt:stage, 'dev'}
