@@ -21,6 +21,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.267.0",
     "@aws-sdk/util-dynamodb": "^3.267.0",
+    "@serverless/safeguards-plugin": "^1.2.1",
     "aws-sdk": "^2.1311.0",
     "axios": "^1.3.2",
     "lodash": "^4.17.21",

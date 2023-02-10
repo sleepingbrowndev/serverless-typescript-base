@@ -1,0 +1,19 @@
+stages:
+  - deploy
+
+image:
+  name: sleavely/node-awscli:18.x
+  pull_policy: if-not-present
+
+deploy-dev-typescript-serverless:
+  stage: deploy
+  environment: dev
+  before_script:
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set default.region ap-southeast-1
+  script:
+    - npm ci
+    - ./node_modules/.bin/sls deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"

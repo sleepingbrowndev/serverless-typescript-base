@@ -38,6 +38,10 @@ provider:
         #   Resource: "*"
 
 custom:
+  scripts:
+    hooks:
+      "before:deploy:deploy": cd ../../.gitlab && node husky-validation.js
+      "deploy:function:initialize": cd ../../.gitlab && node husky-validation.js
   prune:
     automatic: true
     number: 3

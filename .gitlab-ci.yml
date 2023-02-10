@@ -1,0 +1,20 @@
+stages:
+  - triggers
+
+trigger-typescript-serverless:
+  stage: triggers
+  trigger:
+    include: .gitlab/ci/typescript-serverless.yml
+    strategy: depend
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - src/**/*
+    - if: $CI_COMMIT_TAG
+      changes:
+        - src/**/*
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - src/**/*
+      when: manual
+      allow_failure: false

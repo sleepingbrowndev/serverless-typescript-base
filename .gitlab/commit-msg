@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cat .gitlab/commit-linter.js | node --input-type=commonjs
