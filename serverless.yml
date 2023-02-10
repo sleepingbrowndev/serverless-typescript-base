@@ -46,6 +46,7 @@ custom:
     staging: 30
     uat: 30
     prod: 90
+  safeguards: ${file(./safeguards/safeguards.yml)}
 
 plugins:
   - serverless-offline
@@ -53,6 +54,7 @@ plugins:
   - serverless-plugin-typescript
   - serverless-plugin-common-excludes
   - serverless-plugin-include-dependencies
+  - "@serverless/safeguards-plugin"
 
 # Importing resources from external yml can keep things cleaner
 # resources:

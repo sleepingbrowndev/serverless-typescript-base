@@ -1,0 +1,11 @@
+- title: DynamoDB Policies
+  safeguard: dynamodb_policy
+  description: To ensure DynamoDB compliance
+  path: ./safeguards/policies
+  enforcementLevel: error
+
+- title: Lambda Policies
+  safeguard: lambda_policy
+  description: To ensure Lambda compliance
+  path: ./safeguards/policies
+  enforcementLevel: error
