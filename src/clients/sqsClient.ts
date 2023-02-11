@@ -1,6 +1,6 @@
 import { Context } from 'aws-lambda';
 import { logger } from "../utils/utilities";
-import { SQS, SendMessageCommandOutput, ReceiveMessageResult, Message } from '@aws-sdk/client-sqs';
+import { SQS, SendMessageCommandOutput, ReceiveMessageResult, ReceiveMessageCommandOutput, Message } from '@aws-sdk/client-sqs';
 
 export default class SQSClient {
     sqs: SQS;
@@ -21,7 +21,7 @@ export default class SQSClient {
     }
 
 
-    async getMessages(queueName: string, context: Context) {
+    async getMessages(queueName: string, context: Context): Promise<ReceiveMessageCommandOutput> {
         const queueUrl = this.getQueueUrl(queueName, context)
         const params = {
             AttributeNames: ["SentTimestamp"],
