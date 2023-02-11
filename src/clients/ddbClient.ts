@@ -1,4 +1,4 @@
-import { AttributeValue, DynamoDB, GetItemInput, PutItemCommandOutput, PutItemInput, QueryCommandInput } from "@aws-sdk/client-dynamodb";
+import { AttributeValue, DynamoDB, GetItemInput, PutItemCommandOutput, PutItemInput, QueryCommandInput, DeleteItemInput, DeleteItemCommandOutput, ScanCommandInput } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export default class DynamoDbClient {
@@ -49,10 +49,40 @@ export default class DynamoDbClient {
         };
         return await this.dynamoDB.putItem(params);
     }
+
+    async deleteItem(deleteItem: DynamoDbClientDeleteItemInput): Promise<DeleteItemCommandOutput> {
+        const params: DeleteItemInput = {
+            TableName: this.tableName,
+            Key: marshall(deleteItem)
+        };
+        return await this.dynamoDB.deleteItem(params);
+    }
+
+    async scanTable<T>(scanItem: Partial<ScanCommandInput>): Promise<T | UnmarshalledAny> {
+        const params: ScanCommandInput = {
+            TableName: this.tableName,
+            ...scanItem
+        };
+        const result = await this.dynamoDB.scan(params);
+        if (!result.Items) {
+            return []
+        }
+        return this.unmarshallScanList(result.Items)
+    }
+
+    unmarshallScanList(items: MarshalledItem[]) {
+        const unmarshalledItems = []
+        for (let index = 0; index < items.length; index++) {
+            const item = items[index];
+            unmarshalledItems.push(unmarshall(item))
+        }
+        return unmarshalledItems
+    }
 }
 
 export interface DynamoDbClientGetItemInput { _pk: string, _sk: string }
-export interface DynamoDbClientPutItemInput { _pk: string, _sk: string, data: any }
+export interface DynamoDbClientPutItemInput { _pk: string, _sk: string, _data: any }
+export interface DynamoDbClientDeleteItemInput { _pk: string, _sk: string }
 
 export interface UnmarshalledAny {
     [key: string]: any;

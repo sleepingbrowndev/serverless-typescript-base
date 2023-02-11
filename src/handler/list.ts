@@ -1,14 +1,22 @@
-// import * as uuid from 'uuid';
-// import { Context } from "aws-lambda";
-// import { DynamoDB } from "aws-sdk";
 import apiResponses from "../utils/api-response";
-// const dynamoDb = new DynamoDB.DocumentClient();
+import { logger } from "../utils/utilities";
+import DynamoDbClient from '../clients/ddbClient';
+const tableName: string = process.env.TABLE_NAME ?? 'undefined';
+const ddbClient = new DynamoDbClient(tableName);
 
-module.exports.lambda_handler = async () => {
+module.exports.lambda_handler = async (event: any) => {
+    logger.appendKeys({
+        resource_path: event.requestContext.resourcePath
+    });
+
     try {
-        return apiResponses._200({ sucess: true, result: 'id' });
+        const result = await ddbClient.scanTable({});
+
+        logger.info('Todos retrieved', { details: { todo: result } });
+        return apiResponses._200({ sucess: true, result: JSON.stringify(result) });
+
     } catch (err: any) {
-        console.log(err);
-        return apiResponses._500({ success: false, result: err.toString() });
+        logger.error('Unexpected error occurred while trying to retrieve Todos', err);
+        return apiResponses._500({ success: false, result: JSON.stringify(err) });
     }
 };

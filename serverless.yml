@@ -16,6 +16,7 @@ provider:
   #   restApiId: # share REST API
   #   restApiRootResourceId: #share REST API
   environment:
+    TABLE_NAME: tableName
     DEBUG: "*"
     NODE_ENV: ${self:provider.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
@@ -133,8 +134,8 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
             allowCredentials: false
-  UpdateTodo:
-    handler: src/handler/update.lambda_handler
+  DeleteTodo:
+    handler: src/handler/delete.lambda_handler
     timeout: 30
     memorySize: 256
     reservedConcurrency: 5
@@ -144,7 +145,7 @@ functions:
       ServiceName: serverless-typescript-${sls:stage}
     events:
       - http:
-          method: PATCH
+          method: DElETE
           path: /todo/{id}
           cors:
             origins: "*"
