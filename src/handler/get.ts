@@ -29,12 +29,12 @@ module.exports.lambda_handler = async (event: any) => {
         if (!result) {
             logger.warn('No todo with ID ' + id + ' found in the databases while trying to retrieve a todo');
             // add 404
-            return apiResponses._400(
-                { success: false, result: 'todo not found' },
+            return apiResponses._404(
+                { success: false, result: 'Todo not found' },
             );
         }
 
-        logger.info('todo retrieved with ID ' + id, { details: { todo: result } });
+        logger.info('Todo retrieved with ID ' + id, { details: { todo: result } });
         return apiResponses._200({ sucess: true, result: JSON.stringify(result) });
 
     } catch (err: any) {

@@ -21,7 +21,36 @@ const apiResponses = {
     };
     return rep;
   },
+  _201: (
+    body: { [key: string]: any },
+    origin: string = "",
+    cookie: Array<string> = [""]
+  ) => {
+    const rep = {
+      statusCode: 200,
+      headers: Object.assign(defaultHeader, {
+        "Access-Control-Allow-Origin": origin,
+      }),
+      multiValueHeaders: { "Set-Cookie": cookie },
+      body: JSON.stringify(body, null, 2),
+    };
+    return rep;
+  },
   _400: (
+    body: { [key: string]: any },
+    origin: string = "",
+    cookie: Array<string> = [""]
+  ) => {
+    return {
+      statusCode: 400,
+      headers: Object.assign(defaultHeader, {
+        "Access-Control-Allow-Origin": origin,
+      }),
+      multiValueHeaders: { "Set-Cookie": cookie },
+      body: JSON.stringify(body, null, 2),
+    };
+  },
+  _404: (
     body: { [key: string]: any },
     origin: string = "",
     cookie: Array<string> = [""]

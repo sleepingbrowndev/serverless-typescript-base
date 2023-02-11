@@ -70,7 +70,7 @@ module.exports.lambda_handler = async (event: any) => {
         await ddbClient.putItem(ddbParams);
 
         //201
-        return apiResponses._200({ sucess: true, result: 'todo created' });
+        return apiResponses._201({ sucess: true, result: 'todo created' });
 
     } catch (err: any) {
         logger.error('Unexpected error occurred while trying to create a todo', err);
