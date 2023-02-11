@@ -21,7 +21,7 @@ export default class SQSClient {
     }
 
 
-    async getMessages(queueName: string, context: Context): Promise<ReceiveMessageCommandOutput> {
+    async getMessages(queueName: string, context: Context) {
         const queueUrl = this.getQueueUrl(queueName, context)
         const params = {
             AttributeNames: ["SentTimestamp"],
