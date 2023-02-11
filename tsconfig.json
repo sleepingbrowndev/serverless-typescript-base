@@ -1,16 +1,23 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "lib": ["esnext"],
+    "target": "ESNext",
     "strict": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "outDir": "lib",
-    "sourceMap": true,
-    "target": "esnext"
+    "types": ["node", "jest"],
+    "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"],
+      "tests/*": ["tests/*"]
+    },
+    "preserveConstEnums": true,
+    "noEmit": true,
+    "sourceMap": false,
+    "module":"ESNext",
+    "moduleResolution":"node",
+    "esModuleInterop": true, 
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true  
   },
+  "typeAcquisition": { "include": ["jest"] },
   "exclude": ["node_modules"]
 }

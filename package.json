@@ -6,10 +6,10 @@
   "scripts": {
     "prepare": "cd .. && husky install",
     "husky:checking": "cd .. && node husky-validation.js",
-    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "lint": "eslint '*.ts' --quiet --fix",
     "local": "serverless offline",
     "deploy": "serverless deploy",
-    "test": "cross-env NODE_ENV=dev mocha -r ts-node/register tests/*.test.ts --exit"
+    "test": "jest --config=jest.config.test.unit.ts"
   },
   "pre-commit": [
     "lint"
