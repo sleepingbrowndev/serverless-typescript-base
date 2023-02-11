@@ -80,9 +80,9 @@ export default class DynamoDbClient {
     }
 }
 
-export interface DynamoDbClientGetItemInput { _pk: string, _sk: string }
-export interface DynamoDbClientPutItemInput { _pk: string, _sk: string, _data: any }
-export interface DynamoDbClientDeleteItemInput { _pk: string, _sk: string }
+export interface DynamoDbClientGetItemInput { _pk: string, _s: string }
+export interface DynamoDbClientPutItemInput { _pk: string, _s: string, _data: any }
+export interface DynamoDbClientDeleteItemInput { _pk: string, _s: string }
 
 export interface UnmarshalledAny {
     [key: string]: any;

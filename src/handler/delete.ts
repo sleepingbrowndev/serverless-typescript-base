@@ -23,7 +23,7 @@ module.exports.lambda_handler = async (event: any) => {
 
         const ddbParams = {
             _pk: id,
-            _sk: '',
+            _s: '',
         }
         await ddbClient.deleteItem(ddbParams);
 

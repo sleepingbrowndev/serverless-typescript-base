@@ -60,7 +60,7 @@ module.exports.lambda_handler = async (event: any) => {
     try {
         let ddbParams = {
             _pk: todo.id,
-            _sk: todo.created_date,
+            _s: todo.created_date,
             _data: {
                 _name: todo.name,
                 _description: todo.description,

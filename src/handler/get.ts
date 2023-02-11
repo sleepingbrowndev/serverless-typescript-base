@@ -22,7 +22,7 @@ module.exports.lambda_handler = async (event: any) => {
     try {
         let ddbParams = {
             _pk: id,
-            _sk: '',
+            _s: '',
         }
         const result = await ddbClient.getItem(ddbParams);
 

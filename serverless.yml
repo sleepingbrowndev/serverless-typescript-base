@@ -16,7 +16,7 @@ provider:
   #   restApiId: # share REST API
   #   restApiRootResourceId: #share REST API
   environment:
-    TABLE_NAME: tableName
+    TABLE_NAME: ecv-webinar-dev-physical-event-table-data
     DEBUG: "*"
     NODE_ENV: ${self:provider.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
