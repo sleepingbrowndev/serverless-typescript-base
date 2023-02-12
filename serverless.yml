@@ -69,7 +69,7 @@ plugins:
 
 functions:
   CreateTodo:
-    handler: src/handler/create.lambda_handler
+    handler: src/handler/create.lambdaHandler
     timeout: 30
     memorySize: 256
     reservedConcurrency: 5
@@ -91,7 +91,7 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: false
   GetTodo:
-    handler: src/handler/get.lambda_handler
+    handler: src/handler/get.lambdaHandler
     timeout: 30
     memorySize: 256
     reservedConcurrency: 5
@@ -113,7 +113,7 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: false
   ListTodo:
-    handler: src/handler/list.lambda_handler
+    handler: src/handler/list.lambdaHandler
     timeout: 30
     memorySize: 256
     reservedConcurrency: 5
@@ -135,13 +135,13 @@ functions:
               - X-Amz-User-Agent
             allowCredentials: false
   DeleteTodo:
-    handler: src/handler/delete.lambda_handler
+    handler: src/handler/delete.lambdaHandler
     timeout: 30
     memorySize: 256
     reservedConcurrency: 5
     tags:
       CreatedBy: "shashenta.rao@ecloudvalley.com"
-      Description: Update Todo
+      Description: Delete Todo
       ServiceName: serverless-typescript-${sls:stage}
     events:
       - http:

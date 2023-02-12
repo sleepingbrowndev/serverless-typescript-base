@@ -1,10 +1,11 @@
+import { Context, APIGatewayProxyResult, APIGatewayEvent } from 'aws-lambda';
 import apiResponses from "../utils/api-response";
 import { logger } from "../utils/utilities";
 import DynamoDbClient from '../clients/ddbClient';
 const tableName: string = process.env.TABLE_NAME ?? 'undefined';
 const ddbClient = new DynamoDbClient(tableName);
 
-module.exports.lambda_handler = async (event: any) => {
+export const lambdaHandler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {
 
     logger.appendKeys({
         resource_path: event.requestContext.resourcePath
