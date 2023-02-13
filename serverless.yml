@@ -17,8 +17,8 @@ provider:
   #   restApiRootResourceId: #share REST API
   environment:
     TABLE_NAME: ecv-webinar-dev-physical-event-table-data
-    DEBUG: "*"
-    NODE_ENV: ${self:provider.stage}
+    SERVICE_NAME: todo-service
+    LOG_LEVEL: INFO
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
   # tracing:
   #   lambda: true

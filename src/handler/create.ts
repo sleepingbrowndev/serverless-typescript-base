@@ -1,7 +1,10 @@
 import { Context, APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';
 import apiResponses from "../utils/api-response";
 import { logger } from "../utils/utilities";
-import DynamoDbClient from '../clients/ddbClient';
+import ajvValidation from "../utils/validator";
+import DynamoDbClient, { DynamoDbClientPutItemInput } from '../clients/ddbClient';
+import { PayloadNotValidException } from "../utils/exceptions";
+
 
 const tableName: string = process.env.TABLE_NAME ?? 'undefined';
 const ddbClient = new DynamoDbClient(tableName);
@@ -30,7 +33,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
 
     // Construct the DDB Table record 
     logger.info(`Constructing DB Entry from ${JSON.stringify(data)}`);
-    const ddbParam = {
+    const ddbParam: DynamoDbClientPutItemInput = {
         _pk: data.id,
         _s: data.created_date,
         _data: {
@@ -60,12 +63,20 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
  */
 async function validateEvent(event: APIGatewayProxyEvent) {
     const data = event.body ? JSON.parse(event.body) : undefined;
+    const schema = {
+        type: "object",
+        properties: {
+            foo: { type: "integer" },
+            bar: { type: "string" }
+        },
+        required: ["foo"],
+        additionalProperties: false
+    }
 
     // Validate and verify payload.
-    // if (data === undefined || !validData(data)) {
-    //     // No body passed - bad request
-    //     throw new Error("Must specify contract details");
-    // }
+    if (data === undefined || !ajvValidation(schema, data)) {
+        throw new PayloadNotValidException("Invalid payload");
+    }
     logger.info(`Returning ${JSON.stringify(data)}`);
     return data;
 }

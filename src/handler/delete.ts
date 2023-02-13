@@ -1,7 +1,8 @@
 import { Context, APIGatewayProxyResult, APIGatewayProxyEvent } from 'aws-lambda';
 import apiResponses from "../utils/api-response";
 import { logger } from "../utils/utilities";
-import DynamoDbClient from '../clients/ddbClient';
+import DynamoDbClient, { DynamoDbClientDeleteItemInput } from '../clients/ddbClient';
+import { QueryStringParametersException } from "../utils/exceptions";
 
 const tableName: string = process.env.TABLE_NAME ?? 'undefined';
 const ddbClient = new DynamoDbClient(tableName);
@@ -20,7 +21,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
     // Assemble from payload
     let data;
     try {
-        data = await validateEvent(event);
+        data = await validateParameters(event);
     } catch (err: any) {
         logger.error(err);
         return apiResponses._400(
@@ -29,8 +30,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
     }
 
     // Construct the DDB Table record 
-    logger.info(`Constructing DB Delete from ${JSON.stringify(data)}`);
-    const ddbParam = {
+    logger.info(`Constructing DB Delete for ${JSON.stringify(data)}`);
+    const ddbParam: DynamoDbClientDeleteItemInput = {
         _pk: data,
         _s: ''
     };
@@ -52,14 +53,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
  * @param event 
  * @returns 
  */
-async function validateEvent(event: APIGatewayProxyEvent) {
-    const data = event.pathParameters ? event.pathParameters?.id! : '';
-
-    // Validate and verify payload.
-    // if (data === undefined || !validData(data)) {
-    //     // No body passed - bad request
-    //     throw new Error("Must specify contract details");
-    // }
+async function validateParameters(event: APIGatewayProxyEvent) {
+    if (!event.pathParameters?.id) {
+        throw new QueryStringParametersException("Id is required");
+    }
+    const data = event.pathParameters?.id!;
     logger.info(`Returning ${JSON.stringify(data)}`);
     return data;
 }
